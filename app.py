@@ -23,7 +23,7 @@ def get_USD(amount):
 def get_GBP(amount):
     rate = get_rate("GBP")
     converted_amount = rate * amount
-    write_to_file("USD", rate, amount, converted_amount)
+    write_to_file("GBP", rate, amount, converted_amount)
     return str(converted_amount)
 
 
@@ -31,8 +31,19 @@ def get_GBP(amount):
 def get_PHP(amount):
     rate = get_rate("PHP")
     converted_amount = rate * amount
-    write_to_file("USD", rate, amount, converted_amount)
+    write_to_file("PHP", rate, amount, converted_amount)
     return str(converted_amount)
+
+
+@app.route('/history/')
+def get_history():
+    f = open("history.txt", "r")
+    lines = []
+    with open("history.txt") as f:
+        for line in f:
+            lines.append(line)
+    f.close()
+    return render_template('template_history.html', route_elements = lines)
 
 
 def get_rate(currency):
@@ -45,8 +56,9 @@ def get_rate(currency):
 def write_to_file(*args):
     f = open("history.txt", "a")
     list_elements = [str(x) for x in [*args]]
-    f.write(', '.join(list_elements))
-    f.write('\n')
+    if len(list_elements) == 4:
+        f.write(', '.join(list_elements))
+        f.write('\n')
     f.close()
 
 
