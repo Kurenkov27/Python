@@ -13,7 +13,6 @@ def hello_world():
 @app.route('/eur_to_usd/<int:amount>')
 def get_USD(amount):
     rate = get_rate("USD")
-    write_to_file("USD", rate)
     converted_amount = rate*amount
     write_to_file("USD", rate, amount, converted_amount)
     return str(converted_amount)
@@ -56,9 +55,8 @@ def get_rate(currency):
 def write_to_file(*args):
     f = open("history.txt", "a")
     list_elements = [str(x) for x in [*args]]
-    if len(list_elements) == 4:
-        f.write(', '.join(list_elements))
-        f.write('\n')
+    f.write(', '.join(list_elements))
+    f.write('\n')
     f.close()
 
 
