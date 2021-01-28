@@ -36,12 +36,10 @@ def get_PHP(amount):
 
 @app.route('/history/')
 def get_history():
-    f = open("history.txt", "r")
     lines = []
     with open("history.txt") as f:
         for line in f:
             lines.append(line)
-    f.close()
     return render_template('template_history.html', route_elements = lines)
 
 

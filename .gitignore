@@ -7,5 +7,5 @@
 # Editor-based HTTP Client requests
 /httpRequests/
 # Ignored manual files
-history.txt
+/history.txt
 
