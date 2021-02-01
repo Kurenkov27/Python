@@ -41,9 +41,9 @@ def get_history_by_currency(currency):
     connection = get_db()
     cursor = connection.cursor()
     resp = cursor.execute("""
-                    select *
+                    select id, currency_to, exchange_rate, amount, "result"
                     from exchange 
-                    where currency_to like ?;
+                    where currency_to = ?;
                 """, (currency,))
     resp = resp.fetchall()
     lines = resp_parser(resp, cursor)
@@ -55,7 +55,7 @@ def get_history_by_amount(amount):
     connection = get_db()
     cursor = connection.cursor()
     resp = cursor.execute("""
-                    select *
+                    select id, currency_to, exchange_rate, amount, "result"
                     from exchange 
                     where amount >= ?;
                 """, (amount,))
@@ -69,7 +69,7 @@ def get_history_statistics():
     connection = get_db()
     cursor = connection.cursor()
     resp = cursor.execute("""
-                select distinct currency_to, count(*), sum(result)
+                select currency_to, count(*), sum(result)
                 from exchange 
                 group by currency_to
             """, ())
@@ -83,7 +83,7 @@ def get_history():
     connection = get_db()
     cursor = connection.cursor()
     resp = cursor.execute("""
-                select *
+                select id, currency_to, exchange_rate, amount, "result"
                 from exchange 
             """, ())
     resp = resp.fetchall()
@@ -92,14 +92,20 @@ def get_history():
 
 
 def resp_parser(resp, cursor):
-    data = []
-    for i in range(len(resp)):
-        data.append(dict(zip([c[0] for c in cursor.description], resp[i])))
-    lines = []
-    for elem in data:
-        output = ", ".join([str(elem[k]) for k in elem.keys()])
-        lines.append(output)
+    # data = []
+    # for i in range(len(resp)):
+    #     data.append(dict(zip([c[0] for c in cursor.description], resp[i])))
+    # lines = []
+    # for elem in data:
+    #     output = ", ".join([str(elem[k]) for k in elem.keys()])
+    #     lines.append(output)
+    lines = [get_line(row) for row in resp]
+
     return lines
+
+
+def get_line(row):
+    return ', '.join([str(row[k]) for k in row.keys()])
 
 
 def get_rate(currency):
